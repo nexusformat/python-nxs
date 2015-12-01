@@ -1,4 +1,4 @@
-# This program is public domain 
+# This program is public domain
 # Author: Paul Kienzle
 
 """@package nxs.napi
@@ -212,7 +212,6 @@ def _libnexus():
     """
     # this will get changed as part of the install process
     # it should correspond to --libdir specified to ./configure
-    nxlibdir = '/usr/local/lib'
     # NEXUSLIB takes precedence
     if 'NEXUSLIB' in os.environ:
         file = os.environ['NEXUSLIB']
@@ -244,7 +243,8 @@ def _libnexus():
             ldenv = 'LD_LIBRARY_PATH'
         # Search the load library path as well as the standard locations
         ldpath = [p for p in os.environ.get(ldenv,'').split(':') if p != '']
-        stdpath = [ nxlibdir ]
+        stdpath = [ '/usr/local/lib', '/usr/local/lib64',
+                    '/usr/lib', '/usr/lib64']
         files += [os.path.join(p,lib) for p in [filedir]+ldpath+stdpath]
 
     # Given a list of files, try loading the first one that is available.
@@ -464,7 +464,7 @@ class NeXus(object):
         # Remove relative path indicators from target
         L = []
         for t in target:
-            if t == '.': 
+            if t == '.':
                 # Skip current node
                 pass
             elif t == '..':
@@ -524,7 +524,7 @@ class NeXus(object):
             up.pop()
         for target in up:
             self.closegroup()
-        
+
         # Open groups on the way down
         for target in down:
             (name, nxclass) = target
@@ -647,8 +647,8 @@ class NeXus(object):
 
         Note that HDF4 files can have entries in the file with classes
         that don't need to be processed.  If the file follows the standard
-        NeXus DTDs then skip any entry for which nxclass.startswith('NX') 
-        is False.  For non-conforming files, skip those entries with 
+        NeXus DTDs then skip any entry for which nxclass.startswith('NX')
+        is False.  For non-conforming files, skip those entries with
         nxclass in nxs.H4SKIP.
         """
         name = ctypes.create_string_buffer(MAXNAMELEN)
@@ -759,7 +759,7 @@ class NeXus(object):
         rank = c_int(0)
         shape = numpy.zeros(MAXRANK, 'int64')
         storage = c_int(0)
-        status = nxlib.nxigetrawinfo64_(self.handle, _ref(rank), 
+        status = nxlib.nxigetrawinfo64_(self.handle, _ref(rank),
                                         shape.ctypes.data, _ref(storage))
         if status == ERROR:
             raise NeXusError, "Could not get data info: %s"%(self._loc())
@@ -795,7 +795,7 @@ class NeXus(object):
         rank = c_int(0)
         shape = numpy.zeros(MAXRANK, 'int64')
         storage = c_int(0)
-        status = nxlib.nxigetinfo64_(self.handle, _ref(rank), 
+        status = nxlib.nxigetinfo64_(self.handle, _ref(rank),
                                      shape.ctypes.data,
                                      _ref(storage))
         if status == ERROR:
@@ -912,7 +912,7 @@ class NeXus(object):
         """
         Return the data.  If data is a string (1-D char array), a python
         string is returned.  If data is a scalar (1-D numeric array of
-        length 1), a python scalar is returned.  If data is a string 
+        length 1), a python scalar is returned.  If data is a string
         array, a numpy array of type 'S#' where # is the maximum string
         length is returned.  If data is a numeric array, a numpy array
         is returned.
@@ -1373,7 +1373,7 @@ class NeXus(object):
             datafn = lambda: data.value
         else:
             # scalar, array or string list - use numpy array
-            if dtype=='char': 
+            if dtype=='char':
                 data = numpy.zeros(shape[:-1], dtype='S%i'%shape[-1])
             else:
                 data = numpy.zeros(shape, dtype)
@@ -1389,10 +1389,10 @@ class NeXus(object):
         """
         Convert an input array to a C pointer to a dense array.
 
-        Returns data, pdata where 
+        Returns data, pdata where
         - data is a possibly new copy of the array
-        - pdata is a pointer to the beginning of the array.  
-        Note that you must hold a reference to data for as long 
+        - pdata is a pointer to the beginning of the array.
+        Note that you must hold a reference to data for as long
         as you need pdata to keep the memory from being released to the heap.
         """
         if isinstance(shape, int):
@@ -1419,7 +1419,7 @@ class NeXus(object):
 
         data = numpy.ascontiguousarray(data)
         pdata = data.ctypes.data
-            
+
         return data,pdata
 
     def show(self, path=None, indent=0):
