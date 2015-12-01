@@ -19,5 +19,5 @@ setup(name='NeXus',
       description='Python Bindings to libNeXus',
       author='Paul Kienzle',
       packages = ['nxs'],
-      license='LGPLv2+'
+      license='LGPLv2'
 )
