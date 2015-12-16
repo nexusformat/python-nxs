@@ -1,4 +1,3 @@
-# This program is public domain
 """@package nxs
 Python NeXus interface.
 
@@ -14,9 +13,20 @@ platforms from the NeXus site.  Details of where the nxs package
 searches for the libraries are recorded in `nxs.napi`.
 """
 
-## @mainpage NeXus Python Documentation
-## See nxs.napi on the Packages tab
+import unittest 
+import nxs.napi as napi
+import os
 
-from nxs.napi import *
-from nxs.tree import *
-from . import test
+class test_file_creation(unittest.TestCase):
+
+    def test_hdf5(self):
+        f = napi.open("test_hdf5.nxs","w5")
+        os.remove("test_hdf5.nxs")
+        
+    def test_hdf4(self):
+        f = napi.open("test_hdf4.nxs","w4")
+        os.remove("test_hdf4.nxs")
+        
+    def test_mxml(self):
+        f = napi.open("test_mxml.nxs","wx")
+        

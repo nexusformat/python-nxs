@@ -12,11 +12,14 @@
 #
 #        python setup.py install
 #
-from distutils.core import setup 
+from setuptools import setup
  
 setup(name='NeXus', 
-       version='4.2', 
-       description='Python Bindings to libNeXus', 
-       author='Paul Kienzle', 
-       packages = ['nxs'], 
-       ) 
+      version='4.4.1', 
+      description='Python Bindings to libNeXus', 
+      author='Paul Kienzle', 
+      license="MIT",
+      url="https://github.com/nexusformat/python-nxs",
+      packages = ['nxs'], 
+      test_suite="nxs.test",
+      ) 

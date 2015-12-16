@@ -24,7 +24,7 @@ looks in the following places in order::
 
 - On Windows it looks for one of libNeXus.dll or libNeXus-0.dll.
 - On OS X it looks for libNeXus.0.dylib
-- On Unix it looks for libNeXus.so.0
+- On Unix it looks for libNeXus.so.1
 - NEXUSDIR defaults to 'C:\\Program Files\\NeXus Data Format'.
 - LIBDIR defaults to /usr/local/lib, but is replaced by the value of --libdir during configure.
 
@@ -240,7 +240,7 @@ def _libnexus():
             lib = 'libNeXus.0.dylib'
             ldenv = 'DYLD_LIBRARY_PATH'
         else:
-            lib = 'libNeXus.so.0'
+            lib = 'libNeXus.so.1'
             ldenv = 'LD_LIBRARY_PATH'
         # Search the load library path as well as the standard locations
         ldpath = [p for p in os.environ.get(ldenv,'').split(':') if p != '']
