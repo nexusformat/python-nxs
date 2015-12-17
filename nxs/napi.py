@@ -1,7 +1,7 @@
 # This program is public domain 
 # Author: Paul Kienzle
 
-"""@package nxs.napi
+"""
 Wrapper for the NeXus shared library.
 
 Use this interface when converting code from other languages which
@@ -10,89 +10,137 @@ do not support the natural view of the hierarchy.
 Library Location
 ================
 
-This wrapper needs the location of the libNeXus precompiled binary. It
-looks in the following places in order::
+:py:mod:`nxs.napi` needs to know the location of the `libNeXus` C-library in
+order to load it via :py:mod:`ctypes`.  It looks in the following places in
+order:
 
-@verbatim
-   os.environ['NEXUSLIB']                  - All
-   directory containing nxs.py             - All
-   os.environ['NEXUSDIR']\\bin              - Windows
-   os.environ['LD_LIBRARY_PATH']           - Unix
-   os.environ['DYLD_LIBRARY_PATH']         - Darwin
-   LIBDIR                                  - Unix and Darwin
-@endverbatim
 
-- On Windows it looks for one of libNeXus.dll or libNeXus-0.dll.
-- On OS X it looks for libNeXus.0.dylib
-- On Unix it looks for libNeXus.so.1
-- NEXUSDIR defaults to 'C:\\Program Files\\NeXus Data Format'.
-- LIBDIR defaults to /usr/local/lib, but is replaced by the value of --libdir during configure.
++---------------------------------+-----------------+
+| Environment                     | Platforms       |
++=================================+=================+
+| `os.environ['NEXUSLIB']`        | All             |
++---------------------------------+-----------------+
+| directory containing nxs.py     | All             |
++---------------------------------+-----------------+
+| `os.environ['NEXUSDIR']\\bin`    | Windows         |
++---------------------------------+-----------------+
+| `os.environ['LD_LIBRARY_PATH']  | Unix            |
+| `                               |                 |
++---------------------------------+-----------------+
+| `os.environ['DYLD_LIBRARY_PATH' | Darwin          |
+| ]`                              |                 |
++---------------------------------+-----------------+
+| `LIBDIR`                        | Unix and Darwin |
++---------------------------------+-----------------+
 
-The import will raise an OSError exception if the library wasn't found
-or couldn't be loaded.  Note that on Windows in particular this may be
+
+* On Windows it looks for one of ``libNeXus.dll`` or ``libNeXus-0.dll``.
+* On OS X it looks for ``libNeXus.0.dylib``
+* On Unix it looks for ``libNeXus.so.1``
+* ``NEXUSDIR`` defaults to ``C:\\Program Files\\NeXus Data Format``.
+* ``LIBDIR`` defaults to ``/usr/local/lib``, but is replaced by the value of
+  ``--libdir`` during configure.
+
+The import will raise an :py:exc:`OSError` exception if the library wasn't
+found or couldn't be loaded.  Note that on Windows in particular this may be
 because the supporting HDF5 dlls were not available in the usual places.
 
 If you are extracting the nexus library from a bundle at runtime, set
-os.environ['NEXUSLIB'] to the path where it is extracted before the
+`os.environ['NEXUSLIB']` to the path where it is extracted before the
 first import of nxs.
 
 Example
 =======
-@code
+.. code-block:: python
+
   import nxs
   file = nxs.open('filename.nxs','rw')
   file.opengroup('entry1')
   file.opendata('definition')
   print file.getdata()
   file.close()
-@endcode
 
-  See @see nxstest.py for a more complete example.
+
+See @see nxstest.py for a more complete example.
 
 Interface
 =========
 
-When converting code to python from other languages you do not
-necessarily want to redo the file handling code.  The nxs
-provides an interface which more closely follows the
-NeXus application programming interface (NAPI_).
+When converting code to python from other languages you do not necessarily want
+to redo the file handling code.  The nxs provides an interface which more
+closely follows the NeXus application programming interface (NAPI_).
 
-This wrapper differs from NAPI in several respects::
+This wrapper differs from NAPI in several respects:
 
-  - Data values are loaded/stored directly from numpy arrays.
-  - Return codes are turned into exceptions.
-  - The file handle is stored in a file object
-  - Constants are handled somewhat differently (see below)
-  - Type checking on data/parameter storage
-  - Adds iterators file.entries() and file.attrs()
-  - Adds link() function to return the name of the linked to group, if any
-  - NXmalloc/NXfree are not needed.
+* Data values are loaded/stored directly from numpy arrays.
+* Return codes are turned into exceptions.
+* The file handle is stored in a file object
+* Constants are handled somewhat differently (see below)
+* Type checking on data/parameter storage
+* Adds iterators file.entries() and file.attrs()
+* Adds link() function to return the name of the linked to group, if any
+* NXmalloc/NXfree are not needed.
 
-File open modes can be constants or strings::
+File open modes can be constants or strings:
 
-@verbatim
- nxs.ACC_READ      'r'
- nxs.ACC_RDWR      'rw'
- nxs.ACC_CREATE    'w'
- nxs.ACC_CREATE4   'w4'
- nxs.ACC_CREATE5   'w5'
- nxs.ACC_CREATEXML 'wx'
-@endverbatim
++--------------------------+--------------------------+
+| Flag                     | Character representation |
++==========================+==========================+
+| `nxs.napi.ACC_READ`      | 'r'                      |
++--------------------------+--------------------------+
+| `nxs.napi.ACC_RDWR`      | 'rw'                     |
++--------------------------+--------------------------+
+| `nxs.napi.ACC_CREATE`    | 'w'                      |
++--------------------------+--------------------------+
+| `nxs.napi.ACC_CREATE4`   | 'w4'                     |
++--------------------------+--------------------------+
+| `nxs.napi.ACC_CREATE5`   | 'w5'                     |
++--------------------------+--------------------------+
+| `nxs.napi.ACC_CREATEXML` | 'wx'                     |
++--------------------------+--------------------------+
 
-Dimension constants::
 
-  - nxs.UNLIMITED  - for the extensible data dimension
-  - nxs.MAXRANK    - for the number of possible dimensions
+Dimension constants:
+   
++---------------+---------------------------------------+
+| Constant      | Description                           |
++===============+=======================================+
+| nxs.UNLIMITED | for the extensible data dimension     |
++---------------+---------------------------------------+
+| nxs.MAXRANK   | for the number of possible dimensions |
++---------------+---------------------------------------+
 
-Data types are strings corresponding to the numpy data types::
+Data types are strings corresponding to the numpy data types:
 
-  'float32' 'float64'
-  'int8' 'int16' 'int32' 'int64'
-  'uint8' 'uint16' 'uint32' 'uint64'
++---------------+-----------------------------+
+| Type string   | Description                 |
++===============+=============================+
+| ``'float32'`` | 32Bit floating point number |
++---------------+-----------------------------+
+| ``'float64'`` | 64Bit floating point number |
++---------------+-----------------------------+
+| ``'int8'``    | 8Bit singed integer         |
++---------------+-----------------------------+
+| ``'int16'``   | 16Bit signed integer        |
++---------------+-----------------------------+
+| ``'int32'``   | 32Bit signed integer        |
++---------------+-----------------------------+
+| ``'int64'``   | 64Bit signed integer        |
++---------------+-----------------------------+
+| ``'uint8'``   | 8Bit unsigned integer       |
++---------------+-----------------------------+
+| ``'uint16'``  | 16Bit unsigned integer      |
++---------------+-----------------------------+
+| ``'uint32'``  | 32Bit unsigned integer      |
++---------------+-----------------------------+
+| ``'uint64'``  | 64Bit unsigned integer      |
++---------------+-----------------------------+
+| ``'char'``    | used for string data        |
++---------------+-----------------------------+
 
-  Use 'char' for string data.
 
-You can use the numpy A.dtype attribute for the type of array A.
+To retrieve the type of a :py:mod:`numpy` array  one can use its
+:py:attr:`dtype` attribute.
 
 Dimensions are lists of integers or numpy arrays.  You can use the
 numpy A.shape attribute for the dimensions of array A.
@@ -103,11 +151,21 @@ Compression codes are::
 
   As of this writing NeXus only supports 'none' and 'lzw'.
 
-Miscellaneous constants::
-
-  - nxs.MAXNAMELEN  - names must be shorter than this
-  - nxs.MAXPATHLEN  - total path length must be shorter than this
-  - nxs.H4SKIP - class names that may appear in HDF4 files but can be ignored
+Miscellaneous constants:
+    
++----------------+--------------------------------------------------------------+
+| Constant       | Description                                                  |
++================+==============================================================+
+| :py:const:`nxs | names must be shorter than this                              |
+| .napi.MAXNAMEL |                                                              |
+| EN`            |                                                              |
++----------------+--------------------------------------------------------------+
+| nxs.napi.MAXPA | total path length must be shorter than this                  |
+| THLEN          |                                                              |
++----------------+--------------------------------------------------------------+
+| nxs.napi.H4SKI | class names that may appear in HDF4 files but can be ignored |
+| P              |                                                              |
++----------------+--------------------------------------------------------------+
 
 Caveats
 =======

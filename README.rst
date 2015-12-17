@@ -25,7 +25,7 @@ NeXus library.
 It has been tested on Python 2.5 in Windows, OS X and Linux.  
 
 The bindings should be easily modified for any version of Python which supports 
-ctypes and numpy.
+ctypes and numpy. In order to build the documentation `sphinx` is required.
 
 Building and Installing
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,6 +37,14 @@ This package uses the standard distutils installer for python
     $ python setup.py install
 
 You will also need to make sure that `libNeXus` can be found.  
+In order to build the documentation use 
+
+.. code-block:: bash
+
+    $ python setup.py build_sphinx
+
+
+
 
 
 Using API from Python
@@ -67,9 +75,10 @@ functions NXmalloc and NXfree are done automatically in the API when needed.
 The file handle is an object with methods rather than a parameter to functions.
 Instead of checking status codes, errors raise exceptions.
 
-The input and returned values match the format of the data in the files.  On return, python creates
-values of the correct type.  However on input, numeric types must be created correctly using 
-``numpy.array(...,dtype='type')``. The matching datatypes are:
+The input and returned values match the format of the data in the files.  On
+return, python creates values of the correct type.  However on input, numeric
+types must be created correctly using ``numpy.array(...,dtype='type')``. The
+matching datatypes are:
 
 ==============     ===============
 NeXus datatype     Python Datatype
