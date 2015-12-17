@@ -3,3 +3,5 @@
 build
 dist
 NeXus.egg-info
+MANIFEST
+dist

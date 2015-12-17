@@ -5,7 +5,7 @@
 # the windows installer and the nxs directory copied to
 # the python site-packages directory
 #
-# On Linux the Makefile will also install python, but not 
+# On Linux the Makefile will also install python, but not
 # using this file - instead it uses the automake python install bits
 #
 # To use this file type:
@@ -22,4 +22,5 @@ setup(name='NeXus',
       url="https://github.com/nexusformat/python-nxs",
       packages = ['nxs'], 
       test_suite="nxs.test",
+      license='LGPLv2'
       ) 
