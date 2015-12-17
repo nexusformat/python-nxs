@@ -19,10 +19,16 @@ Installation
 Requirements
 ~~~~~~~~~~~~
 
-This package provides a ctypes binding from Python+numpy to the precompiled
-NeXus library.
+The following software has to be installed on your system in order to 
+successfully install and use the Python bindings for NAPI
 
-It has been tested on Python 2.5 in Windows, OS X and Linux.  
+* Python 2.5 or higher
+* ``setuptools`` (replaces the old ``distutils`` code)
+* ``sphinx`` to build the documentation
+* a working installation of the runtime binaries of ``libNeXus``
+* ``numpy``-package
+
+Supported operating systems are: Windows, OS X and Linux.
 
 The bindings should be easily modified for any version of Python which supports 
 ctypes and numpy. In order to build the documentation `sphinx` is required.
@@ -43,7 +49,11 @@ In order to build the documentation use
 
     $ python setup.py build_sphinx
 
+To run the tests use 
 
+.. code-block:: bash
+
+    $ python setup.py test 
 
 
 
