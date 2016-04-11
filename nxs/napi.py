@@ -949,7 +949,7 @@ class NeXus(object):
         # Make sure shape/chunk_shape are integers; hope that 32/64 bit issues
         # with the c int type sort themselves out.
         dims = numpy.asarray(shape,'int64')
-        if chunks == None:
+        if chunks is None:
             chunks = numpy.ones(dims.shape,'int64')
             chunks[-1] = shape[-1]
         else:
