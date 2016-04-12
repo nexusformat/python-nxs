@@ -19,4 +19,3 @@ searches for the libraries are recorded in `nxs.napi`.
 
 from nxs.napi import *
 from nxs.tree import *
-from . import test
