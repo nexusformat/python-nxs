@@ -463,8 +463,8 @@ class NeXusTree(napi.NeXus):
             # Don't use compression for small datasets
             try:
                 self.makedata(data.nxname, data.dtype, shape)
-            except StandardError,errortype:
-                print "Error in tree, makedata: ",errortype
+            except StandardError as errortype:
+                print("Error in tree, makedata: ", errortype)
 
         self.opendata(data.nxname)
         self._writeattrs(data.attrs)
