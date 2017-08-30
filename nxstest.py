@@ -6,15 +6,17 @@
 NeXus tests converted to python.
 """
 
+from __future__ import print_function
+
 import nxs,os,numpy,sys
 
 def memfootprint():
     import gc
     objs = gc.get_objects()
     classes = set( c.__class__ for c in gc.get_objects() if hasattr(c,'__class__') )
-    # print "\n".join([c.__name__ for c in classes])
-    print "#objects=",len(objs)
-    print "#classes=",len(classes)
+    # print("\n".join([c.__name__ for c in classes]))
+    print("#objects=",len(objs))
+    print("#classes=",len(classes))
 
 def leak_test1(n = 1000, mode='w5'):
 #    import gc
@@ -25,10 +27,10 @@ def leak_test1(n = 1000, mode='w5'):
     except OSError: pass
     file = nxs.open(filename,mode)
     file.close()
-    print "File should exist now"
+    print("File should exist now")
     for i in range(n):
         if i%100 == 0: 
-            print "loop count %d"%i
+            print("loop count %d"%i)
             memfootprint()
         file.open()
         file.close()
@@ -39,31 +41,31 @@ def _show(file, indent=0):
     prefix = ' '*indent
     link = file.link()
     if link:
-        print "%(prefix)s-> %(link)s" % locals()
+        print("%(prefix)s-> %(link)s" % locals())
         return
     for attr,value in file.attrs():
-        print "%(prefix)s@%(attr)s: %(value)s" % locals()
+        print("%(prefix)s@%(attr)s: %(value)s" % locals())
     for name,nxclass in file.entries():
         if nxclass == "SDS":
             shape,dtype = file.getinfo()
             dims = "x".join([str(x) for x in shape])
-            print "%(prefix)s%(name)s %(dtype)s %(dims)s" % locals()
+            print("%(prefix)s%(name)s %(dtype)s %(dims)s" % locals())
             link = file.link()
             if link:
-                print "  %(prefix)s-> %(link)s" % locals()
+                print("  %(prefix)s-> %(link)s" % locals())
             else:
                 for attr,value in file.attrs():
-                    print "  %(prefix)s@%(attr)s: %(value)s" % locals()
+                    print("  %(prefix)s@%(attr)s: %(value)s" % locals())
                 if numpy.prod(shape) < 8:
                     value = file.getdata()
-                    print "  %s%s"%(prefix,str(value))
+                    print("  %s%s"%(prefix,str(value)))
         else:
-            print "%(prefix)s%(name)s %(nxclass)s" % locals()
+            print("%(prefix)s%(name)s %(nxclass)s" % locals())
             _show(file, indent+2)
 
 def show_structure(filename):
     file = nxs.open(filename)
-    print "=== File",file.inquirefile()
+    print("=== File",file.inquirefile())
     _show(file)
     
 
@@ -168,7 +170,7 @@ def populate(filename,mode):
 failures = 0
 def fail(msg):
     global failures
-    print "FAIL:",msg
+    print("FAIL:",msg)
     failures += 1
 
 def dicteq(a,b):
@@ -177,14 +179,14 @@ def dicteq(a,b):
     """
     for k,v in a.iteritems():
         if k not in b:
-            print k,"not in",b
+            print(k,"not in",b)
             return False
         if v != b[k]: 
-            print v,"not equal",b[k]
+            print(v,"not equal",b[k])
             return False
     for k,v in b.iteritems():
         if k not in a: 
-            print k,"not in",a
+            print(k,"not in",a)
             return False
     return True
 
@@ -264,10 +266,10 @@ def check(filename, mode):
         fail("returned string array info is incorrect")
     if not (rawshape[0]==5 and rawshape[1]==4 and rawdtype=='char'):
         fail("returned string array storage info is incorrect")
-        print rawshape,dtype
+        print(rawshape,dtype)
     if not (get[0]=="abcd" and get[4]=="qrst"):
         fail("returned string is incorrect")
-        print shape,dtype
+        print(shape,dtype)
 
 
     # Check reading from compressed datasets
@@ -281,7 +283,7 @@ def check(filename, mode):
     file.closegroup()               #/entry/data
     if not (get == expected).all():
         fail("compressed data differs")
-        print get
+        print(get)
         
     # Check strings
     file.opengroup('sample','NXsample') #/entry/sample
@@ -293,13 +295,13 @@ def check(filename, mode):
     file.closegroup()                   #/entry/sample
     if not (shape[0]==12 and dtype=='char'):
         fail("returned string info is incorrect")
-        print shape,dtype
+        print(shape,dtype)
     if not (rawshape[0]==20 and rawdtype=='char'):
         fail("returned string storage info is incorrect")
-        print shape,dtype
+        print(shape,dtype)
     if not (get == "NeXus sample"):
         fail("returned string is incorrect")
-        print shape,dtype
+        print(shape,dtype)
 
     file.closegroup() #/entry
 
@@ -328,13 +330,13 @@ def check(filename, mode):
     expected = comp_array[4:(4+5),4:(4+3)]
     if not (get == expected).all():
         fail("retrieved compressed slabs differ")
-        print get
+        print(get)
     file.openpath('/entry/data/comp_data')
     get = file.getslab([4,4],[5,3])
     expected = comp_array[4:(4+5),4:(4+3)]
     if not (get == expected).all():
         fail("after reopen: retrieved compressed slabs differ")
-        print get
+        print(get)
     file.openpath('../r8_data')
     for k,v in file.attrs():
         if k == 'target' and v != '/entry/r8_data':
