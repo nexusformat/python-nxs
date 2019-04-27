@@ -236,12 +236,12 @@ where signal is the field containing the data, axes are the fields listing the
 signal sample points, entry is file/path within the file to the data group and
 title is the title of the group or the parent NXentry, if available.
 """
-from __future__ import print_function, with_statement
+from __future__ import absolute_import, with_statement, print_function
 from copy import copy, deepcopy
 
 import numpy as np
-import napi
-from napi import NeXusError
+import nxs.napi as napi
+from nxs.napi import NeXusError
 
 #Memory in MB
 NX_MEMORY = 500
