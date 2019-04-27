@@ -5,3 +5,5 @@ dist
 NeXus.egg-info
 MANIFEST
 dist
+/.project
+/.pydevproject
