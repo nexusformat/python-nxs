@@ -11,7 +11,7 @@ of the NeXus API to Python for reading, writing and modifying NeXus Files.
 Python NeXus API imitates the functionality NeXus API though with a more object
 oriented flavour.
 
-* Information on NeXus Dataformat: http://www.nexusformat.org/Introduction
+* Information on NeXus Dataformat: http://www.nexusformat.org/
 
 Installation
 ============
