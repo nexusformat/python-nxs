@@ -236,12 +236,12 @@ where signal is the field containing the data, axes are the fields listing the
 signal sample points, entry is file/path within the file to the data group and
 title is the title of the group or the parent NXentry, if available.
 """
-from __future__ import with_statement
+from __future__ import absolute_import, with_statement, print_function
 from copy import copy, deepcopy
 
 import numpy as np
-import napi
-from napi import NeXusError
+import nxs.napi as napi
+from nxs.napi import NeXusError
 
 #Memory in MB
 NX_MEMORY = 500
@@ -792,7 +792,7 @@ class NXobject(object):
         displayed. If 'recursive' is True, the contents of child groups are
         also displayed.
         """
-        print self._str_tree(attrs=attrs,recursive=recursive)
+        print(self._str_tree(attrs=attrs,recursive=recursive))
 
     @property
     def tree(self):
@@ -1823,7 +1823,7 @@ class PylabPlotter(object):
                 for _dim in data.shape[2:]:
                     slab.append(0)
                 data = data[slab].view().reshape(data.shape[:2])
-                print "Warning: Only the top 2D slice of the data is plotted"
+                print("Warning: Only the top 2D slice of the data is plotted")
 
             x = axis_data[0]
             y = axis_data[1]
@@ -3240,7 +3240,7 @@ usage: %s cmd [args]
     ls *.nxs
     plot file.nxs entry.data
         """%(argv[0],)
-        print usage
+        print(usage)
 
 
 if __name__ == "__main__":

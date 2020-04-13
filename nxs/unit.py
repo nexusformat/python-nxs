@@ -162,7 +162,7 @@ class Converter(object):
         else:
             self.scalemap = {'': 1}
             self.scalebase = 1
-            #raise ValueError, "Unknown unit %s"%name
+            #raise ValueError("Unknown unit %s"%name)
 
     def scale(self, units=""):
         if units == "" or self.scalemap is None: return 1
@@ -181,7 +181,7 @@ class Converter(object):
             raise KeyError("%s not in %s"%(units," ".join(self.scalemap.keys())))
 
 def _check(expect,get):
-    if expect != get: raise ValueError, "Expected %s but got %s"%(expect,get)
+    if expect != get: raise ValueError("Expected %s but got %s"%(expect,get))
     #print expect,"==",get
 
 def test():
